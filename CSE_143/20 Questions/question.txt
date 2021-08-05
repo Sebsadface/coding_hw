@@ -1,0 +1,14 @@
+Q:
+Can you eat it?
+A:
+candy bar
+Q:
+Does it require electricity?
+A:
+computer
+Q:
+Is it comfortable?
+A:
+blancket
+A:
+piece of paper
