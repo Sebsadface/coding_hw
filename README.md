@@ -1,3 +1,3 @@
-# uw_code
+# coding_hw
 
-###### Here are the codes I've written during my time at UW up till now.
+###### coding homework.
