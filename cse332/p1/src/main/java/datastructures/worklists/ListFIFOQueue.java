@@ -8,78 +8,74 @@ import cse332.interfaces.worklists.FIFOWorkList;
  * for method specifications.
  */
 public class ListFIFOQueue<E> extends FIFOWorkList<E> {
-    private final Node<E> front;
-    private final Node<E> back;
+    private Node<E> front;
+    private Node<E> back;
     private int size;
     public ListFIFOQueue() {
-        front = new Node<>(null);
-        back = new Node<>(null);
+        this.front = new Node<>(null);
+        this.back = new Node<>(null);
         clear();
     }
 
     @Override
     public void add(E work) {
-        if (!hasWork()) {
-            front.next = new Node<>(work, back, front);
-            back.prev = front.next;
+        if (!this.hasWork()) {
+            this.front = new Node<>(work);
+            this.back = this.front;
         } else {
-            back.prev.next = new Node<>(work,back,back.prev);
-            back.prev = back.prev.next;
+            this.back.next = new Node<>(work);
+            this.back = this.back.next;
         }
-        size++;
+        this.size++;
     }
 
     @Override
     public E peek() {
-        if (!hasWork()) {
+        if (!this.hasWork()) {
             throw new NoSuchElementException();
         }
-        return front.next.data;
+        return this.front.data;
     }
 
     @Override
     public E next() {
-        if (!hasWork()) {
+        if (!this.hasWork()) {
             throw new NoSuchElementException();
         }
 
-        E next = front.next.data;
-        if (size == 1) {
-            front.next = back;
-            back.prev = front;
+        E next = this.front.data;
+        if (this.size == 1) {
+            this.back = this.front = null;
         } else {
-            front.next = front.next.next;
-            front.next.next.prev = front;
+            this.front = this.front.next;
         }
-        size--;
+        this.size--;
         return next;
     }
 
     @Override
     public int size() {
-        return size;
+        return this.size;
     }
 
     @Override
     public void clear() {
-       front.next = back;
-       back.prev = front;
+       this.front = null;
+       this.back = null;
        size = 0;
     }
 
     private static class Node <E> {
         public E data;
         public Node<E> next;
-        public Node<E> prev;
 
         public Node(E data) {
-            this(data, null, null);
+            this(data, null);
         }
 
-        public Node(E data, Node<E> next, Node<E> prev) {
+        public Node(E data, Node<E> next) {
             this.data = data;
             this.next = next;
-            this.prev = prev;
         }
     }
 }

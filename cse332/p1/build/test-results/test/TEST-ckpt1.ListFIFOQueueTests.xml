@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ckpt1.ListFIFOQueueTests" tests="7" skipped="0" failures="0" errors="0" timestamp="2023-01-20T07:15:29" hostname="Sebs-MacBook-Pro-3.local" time="0.044">
+  <properties/>
+  <testcase name="testClear()" classname="ckpt1.ListFIFOQueueTests" time="0.023"/>
+  <testcase name="testPeekHasException()" classname="ckpt1.ListFIFOQueueTests" time="0.001"/>
+  <testcase name="testHasWorkAfterAddRemove()" classname="ckpt1.ListFIFOQueueTests" time="0.003"/>
+  <testcase name="test_addPeekNext_manyNumbers_correctStructure()" classname="ckpt1.ListFIFOQueueTests" time="0.01"/>
+  <testcase name="testHasWork()" classname="ckpt1.ListFIFOQueueTests" time="0.0"/>
+  <testcase name="testNextHasException()" classname="ckpt1.ListFIFOQueueTests" time="0.001"/>
+  <testcase name="testHasWorkAfterAdd()" classname="ckpt1.ListFIFOQueueTests" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
