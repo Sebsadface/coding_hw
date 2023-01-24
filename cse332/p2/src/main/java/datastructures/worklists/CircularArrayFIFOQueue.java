@@ -1,5 +1,6 @@
 package datastructures.worklists;
 
+import java.util.NoSuchElementException;
 import cse332.exceptions.NotYetImplementedException;
 import cse332.interfaces.worklists.FixedSizeFIFOWorkList;
 
@@ -7,45 +8,80 @@ import cse332.interfaces.worklists.FixedSizeFIFOWorkList;
  * See cse332/interfaces/worklists/FixedSizeFIFOWorkList.java
  * for method specifications.
  */
-public class CircularArrayFIFOQueue<E> extends FixedSizeFIFOWorkList<E> {
+public class CircularArrayFIFOQueue<E extends Comparable<E>> extends FixedSizeFIFOWorkList<E> {
+    private E[] array;
+    private int frontIndex;
+    private int backIndex;
+    private int size;
+
     public CircularArrayFIFOQueue(int capacity) {
         super(capacity);
-        throw new NotYetImplementedException();
+        clear();
     }
 
     @Override
     public void add(E work) {
-        throw new NotYetImplementedException();
+        if (isFull()) {
+            throw new IllegalStateException();
+        }
+        array[backIndex] = work;
+        size++;
+        backIndex = (backIndex+1) % capacity();
     }
 
     @Override
     public E peek() {
-        throw new NotYetImplementedException();
+        if (!hasWork()) {
+            throw new NoSuchElementException();
+        }
+        return array[frontIndex];
     }
 
     @Override
     public E peek(int i) {
-        throw new NotYetImplementedException();
+        if (!hasWork()) {
+            throw new NoSuchElementException();
+        }
+        if (i < 0 || i >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        return array[(frontIndex+i) % capacity()];
     }
 
     @Override
     public E next() {
-        throw new NotYetImplementedException();
+        if (!hasWork()) {
+            throw new NoSuchElementException();
+        }
+
+        E next = array[frontIndex];
+        size--;
+        frontIndex = (frontIndex + 1) % capacity();
+        return next;
     }
 
     @Override
     public void update(int i, E value) {
-        throw new NotYetImplementedException();
+        if (!hasWork()) {
+            throw new NoSuchElementException();
+        }
+        if (i < 0 || i >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        array[(frontIndex+i)%capacity()] = value;
     }
 
     @Override
     public int size() {
-        throw new NotYetImplementedException();
+        return size;
     }
 
     @Override
     public void clear() {
-        throw new NotYetImplementedException();
+        array = (E[]) new Object[capacity()];
+        backIndex = 0;
+        frontIndex = 0;
+        size = 0;
     }
 
     @Override
@@ -67,7 +103,6 @@ public class CircularArrayFIFOQueue<E> extends FixedSizeFIFOWorkList<E> {
             // FixedSizeFIFOWorkList<E> other = (FixedSizeFIFOWorkList<E>) obj;
 
             // Your code goes here
-
             throw new NotYetImplementedException();
         }
     }
