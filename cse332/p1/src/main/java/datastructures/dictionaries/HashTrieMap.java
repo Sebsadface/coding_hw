@@ -85,7 +85,12 @@ public class HashTrieMap<A extends Comparable<A>, K extends BString<A>, V> exten
             throw new IllegalArgumentException();
         }
 
+        if (this.size == 0) {
+            return false;
+        }
+
         HashTrieNode currentNode = (HashTrieNode) this.root;
+
         for (A character: key) {
             if (!currentNode.pointers.containsKey(character)) {
                 return false;
@@ -102,29 +107,33 @@ public class HashTrieMap<A extends Comparable<A>, K extends BString<A>, V> exten
            throw new IllegalArgumentException();
        }
 
-       HashTrieNode currentNode = (HashTrieNode) this.root;
-       HashTrieNode lastValidNode = (HashTrieNode) this.root;
-       A lastValidCharacter = null;
+       if (root.value != null || !key.isEmpty()) {
+           HashTrieNode currentNode = (HashTrieNode) this.root;
+           HashTrieNode lastValidNode = (HashTrieNode) this.root;
+           A lastValidCharacter = null;
 
-       for (A character : key) {
-           if (currentNode.pointers.size() > 1 || currentNode.value != null) {
-               lastValidNode = currentNode;
-               lastValidCharacter = character;
+           for (A character : key) {
+               if (currentNode.pointers.size() > 1 || currentNode.value != null) {
+                   lastValidNode = currentNode;
+                   lastValidCharacter = character;
+               }
+
+               if (!currentNode.pointers.containsKey(character)) {
+                   return;
+               }
+
+               currentNode = currentNode.pointers.get(character);
            }
 
-           if (!currentNode.pointers.containsKey(character)) {
-               return;
+           if (currentNode.value != null) {
+               if (currentNode.pointers.isEmpty()) {
+                   lastValidNode.pointers.remove(lastValidCharacter);
+               }
+                currentNode.value = null;
+
+               this.size--;
            }
-
-           currentNode = currentNode.pointers.get(character);
        }
-
-       if (currentNode.pointers.isEmpty()) {
-           lastValidNode.pointers.remove(lastValidCharacter);
-       }
-        currentNode.value = null;
-
-       this.size--;
     }
 
     @Override
