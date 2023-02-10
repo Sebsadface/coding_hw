@@ -78,7 +78,7 @@ public class CircularArrayFIFOQueue<E extends Comparable<E>> extends FixedSizeFI
 
     @Override
     public void clear() {
-        array = (E[]) new Object[capacity()];
+        array = (E[]) new Comparable[capacity()];
         backIndex = 0;
         frontIndex = 0;
         size = 0;
@@ -87,7 +87,17 @@ public class CircularArrayFIFOQueue<E extends Comparable<E>> extends FixedSizeFI
     @Override
     public int compareTo(FixedSizeFIFOWorkList<E> other) {
         // You will implement this method in project 2. Leave this method unchanged for project 1.
-        throw new NotYetImplementedException();
+        if (other == null) {
+            throw new NullPointerException();
+        }
+
+        for (int i = 0; i < Math.min(size, other.size()); i++) {
+            if (!this.peek(i).equals(other.peek(i))) {
+                return this.peek(i).compareTo(other.peek(i));
+            }
+        }
+
+        return size - other.size();
     }
 
     @Override
@@ -100,16 +110,19 @@ public class CircularArrayFIFOQueue<E extends Comparable<E>> extends FixedSizeFI
             return false;
         } else {
             // Uncomment the line below for p2 when you implement equals
-            // FixedSizeFIFOWorkList<E> other = (FixedSizeFIFOWorkList<E>) obj;
-
+            FixedSizeFIFOWorkList<E> other = (FixedSizeFIFOWorkList<E>) obj;
             // Your code goes here
-            throw new NotYetImplementedException();
+            return this.compareTo(other) == 0;
         }
     }
 
     @Override
     public int hashCode() {
         // You will implement this method in project 2. Leave this method unchanged for project 1.
-        throw new NotYetImplementedException();
+        int result = this.peek(0).hashCode();
+        for (int i = 1; i < this.size; i++) {
+            result = 31 * result + this.peek(i).hashCode();
+        }
+        return result;
     }
 }

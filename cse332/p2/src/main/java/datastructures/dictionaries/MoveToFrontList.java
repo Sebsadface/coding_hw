@@ -6,6 +6,7 @@ import cse332.interfaces.misc.DeletelessDictionary;
 import cse332.interfaces.misc.SimpleIterator;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * 1. The list is typically not sorted.
