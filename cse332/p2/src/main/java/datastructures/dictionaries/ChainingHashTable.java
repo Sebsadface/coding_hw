@@ -9,6 +9,7 @@ import cse332.interfaces.worklists.WorkList;
 import datastructures.worklists.ArrayStack;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
 /**
@@ -39,9 +40,6 @@ public class ChainingHashTable<K, V> extends DeletelessDictionary<K, V> {
         this.newChain = newChain;
         this.capacity = HARD_CODED_PRIMES[0];
         this.table = new Dictionary[capacity];
-        for (int i = 0; i < capacity; i++) {
-            table[i] = this.newChain.get();
-        }
     }
 
     @Override
@@ -54,7 +52,12 @@ public class ChainingHashTable<K, V> extends DeletelessDictionary<K, V> {
             this.table = rehash(this.table, getNextPrime(capacity));
         }
 
-        V oldVal = table[key.hashCode() % this.capacity].insert(key,value);
+        int index = Math.abs(key.hashCode() % this.capacity);
+        if (table[index] == null) {
+            table[index] = this.newChain.get();
+        }
+
+        V oldVal = table[index].insert(key,value);
         if ( oldVal == null) {
             this.size++;
         }
@@ -67,7 +70,13 @@ public class ChainingHashTable<K, V> extends DeletelessDictionary<K, V> {
         if (key == null) {
             throw new IllegalArgumentException();
         }
-        return this.table[key.hashCode() % this.capacity].find(key);
+
+        int index = Math.abs(key.hashCode() % this.capacity);
+        if (table[index] == null) {
+            return null;
+        } else {
+            return this.table[Math.abs(key.hashCode() % this.capacity)].find(key);
+        }
     }
 
     @Override
@@ -76,12 +85,11 @@ public class ChainingHashTable<K, V> extends DeletelessDictionary<K, V> {
     }
 
     private class CHTIterator extends SimpleIterator<Item<K,V>> {
-        private final WorkList<Item<K,V>> items;
+        private final WorkList<Item<K,V>> items = new ArrayStack<>();
 
         public CHTIterator() {
-            this.items = new ArrayStack<Item<K,V>>();
             for (Dictionary<K,V> dic : table) {
-                if (!dic.isEmpty()) {
+                if (dic != null && !dic.isEmpty()) {
                     for (Item<K,V> item : dic) {
                         items.add(item);
                     }
@@ -96,6 +104,9 @@ public class ChainingHashTable<K, V> extends DeletelessDictionary<K, V> {
 
         @Override
         public Item<K, V> next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
             return items.next();
         }
     }
@@ -105,9 +116,9 @@ public class ChainingHashTable<K, V> extends DeletelessDictionary<K, V> {
         boolean found = false;
 
         if (currentPrime < HARD_CODED_PRIMES[HARD_CODED_PRIMES.length -1]) {
-            for (int i = 0; i < HARD_CODED_PRIMES.length; i++) {
-                if (currentPrime < HARD_CODED_PRIMES[i]) {
-                    nextPrime =  HARD_CODED_PRIMES[i];
+            for (int hardCodedPrime : HARD_CODED_PRIMES) {
+                if (currentPrime < hardCodedPrime) {
+                    nextPrime = hardCodedPrime;
                 }
             }
         } else {
@@ -134,14 +145,15 @@ public class ChainingHashTable<K, V> extends DeletelessDictionary<K, V> {
 
     private  Dictionary<K,V>[] rehash(Dictionary<K, V>[] oldTable, int newCapacity) {
         Dictionary<K,V>[] newTable = new Dictionary[newCapacity];
-        for (int i = 0; i < newCapacity; i++) {
-            newTable[i] = this.newChain.get();
-        }
 
         for (int i = 0; i < this.capacity; i++) {
-            if (!oldTable[i].isEmpty()) {
+            if (oldTable[i] != null && !oldTable[i].isEmpty()) {
                 for (Item<K,V> item : oldTable[i]) {
-                    newTable[item.key.hashCode() % newCapacity].insert(item.key, item.value);
+                    int index = Math.abs(item.key.hashCode() % newCapacity);
+                    if (newTable[index] == null) {
+                        newTable[index] = this.newChain.get();
+                    }
+                    newTable[index].insert(item.key, item.value);
                 }
             }
         }

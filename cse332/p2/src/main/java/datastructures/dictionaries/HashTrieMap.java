@@ -1,13 +1,18 @@
 package datastructures.dictionaries;
 
+import com.sun.net.httpserver.Filter;
+import cse332.datastructures.containers.Item;
 import cse332.exceptions.NotYetImplementedException;
+import cse332.interfaces.misc.Dictionary;
+import cse332.interfaces.misc.SimpleIterator;
 import cse332.interfaces.trie.TrieMap;
+import cse332.interfaces.worklists.WorkList;
 import cse332.types.BString;
+import datastructures.worklists.ArrayStack;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
 /**
  * See cse332/interfaces/trie/TrieMap.java
@@ -15,19 +20,23 @@ import java.util.Map.Entry;
  * for method specifications.
  */
 public class HashTrieMap<A extends Comparable<A>, K extends BString<A>, V> extends TrieMap<A, K, V> {
-    public class HashTrieNode extends TrieNode<Map<A, HashTrieNode>, HashTrieNode> {
+    public class HashTrieNode extends TrieNode<ChainingHashTable<A, HashTrieNode>, HashTrieNode> {
         public HashTrieNode() {
             this(null);
         }
 
         public HashTrieNode(V value) {
-            this.pointers = new HashMap<A, HashTrieNode>();
+            this.pointers = new ChainingHashTable<>(AVLTree::new);
             this.value = value;
         }
 
         @Override
         public Iterator<Entry<A, HashTrieMap<A, K, V>.HashTrieNode>> iterator() {
-            return pointers.entrySet().iterator();
+            ArrayStack<Entry<A,HashTrieNode>> stack = new ArrayStack<>();
+            for (Item<A, HashTrieNode> item : this.pointers) {
+                stack.add(new AbstractMap.SimpleEntry<>(item.key, item.value));
+            }
+            return stack.iterator();
         }
     }
 
@@ -49,10 +58,10 @@ public class HashTrieMap<A extends Comparable<A>, K extends BString<A>, V> exten
         V returnValue = null;
         HashTrieNode currentNode = (HashTrieNode) this.root;
         for (A character : key) {
-            if (!currentNode.pointers.containsKey(character)) {
-                currentNode.pointers.put(character, new HashTrieNode());
+            if (currentNode.pointers.find(character) == null) {
+                currentNode.pointers.insert(character, new HashTrieNode());
             }
-            currentNode = currentNode.pointers.get(character);
+            currentNode = currentNode.pointers.find(character);
         }
         returnValue = currentNode.value;
         currentNode.value = value;
@@ -71,10 +80,10 @@ public class HashTrieMap<A extends Comparable<A>, K extends BString<A>, V> exten
 
         HashTrieNode currentNode = (HashTrieNode) this.root;
         for (A character : key) {
-            if (! currentNode.pointers.containsKey(character)) {
+            if (currentNode.pointers.find(character) == null) {
                 return null;
             }
-            currentNode = currentNode.pointers.get(character);
+            currentNode = currentNode.pointers.find(character);
         }
         return currentNode.value;
     }
@@ -92,10 +101,10 @@ public class HashTrieMap<A extends Comparable<A>, K extends BString<A>, V> exten
         HashTrieNode currentNode = (HashTrieNode) this.root;
 
         for (A character: key) {
-            if (!currentNode.pointers.containsKey(character)) {
+            if (currentNode.pointers.find(character) == null) {
                 return false;
             }
-            currentNode = currentNode.pointers.get(character);
+            currentNode = currentNode.pointers.find(character);
         }
 
         return true;
@@ -103,42 +112,12 @@ public class HashTrieMap<A extends Comparable<A>, K extends BString<A>, V> exten
 
     @Override
     public void delete(K key) {
-       if (key == null) {
-           throw new IllegalArgumentException();
-       }
-
-       if (root.value != null || !key.isEmpty()) {
-           HashTrieNode currentNode = (HashTrieNode) this.root;
-           HashTrieNode lastValidNode = (HashTrieNode) this.root;
-           A lastValidCharacter = null;
-
-           for (A character : key) {
-               if (currentNode.pointers.size() > 1 || currentNode.value != null) {
-                   lastValidNode = currentNode;
-                   lastValidCharacter = character;
-               }
-
-               if (!currentNode.pointers.containsKey(character)) {
-                   return;
-               }
-
-               currentNode = currentNode.pointers.get(character);
-           }
-
-           if (currentNode.value != null) {
-               if (currentNode.pointers.isEmpty()) {
-                   lastValidNode.pointers.remove(lastValidCharacter);
-               }
-                currentNode.value = null;
-
-               this.size--;
-           }
-       }
+      throw new UnsupportedOperationException();
     }
 
     @Override
     public void clear() {
-        this.size = 0;
-        this.root = new HashTrieNode();
+        throw new UnsupportedOperationException();
     }
+
 }

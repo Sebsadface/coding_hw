@@ -7,6 +7,9 @@ import cse332.misc.LargeValueFirstItemComparator;
 import cse332.sorts.InsertionSort;
 import cse332.types.AlphabeticString;
 import cse332.types.NGram;
+import p2.sorts.HeapSort;
+import p2.sorts.QuickSort;
+import p2.sorts.TopKSort;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -72,11 +75,13 @@ public class NGramToNextChoicesMap {
         Item<String, Integer>[] afterNGrams = getCountsAfter(ngram);
 
         Comparator<Item<String, Integer>> comp = new LargeValueFirstItemComparator<String, Integer>();
+        Comparator<Item<String, Integer>> comp2 = new SmallValueFirstItemComparator<String, Integer>();
         if (k < 0) {
             InsertionSort.sort(afterNGrams, comp);
         } else {
             // You must fix this line toward the end of the project
-            throw new NotYetImplementedException();
+            //TopKSort.sort(afterNGrams, k, comp2);
+            QuickSort.sort(afterNGrams, comp);
         }
 
         String[] nextWords = new String[k < 0 ? afterNGrams.length : k];
@@ -91,4 +96,18 @@ public class NGramToNextChoicesMap {
     public String toString() {
         return this.map.toString();
     }
+
+
+    private static class SmallValueFirstItemComparator<K extends Comparable<K>, V extends Comparable<V>>
+            implements Comparator<Item<K, V>> {
+        @Override
+        public int compare(Item<K, V> e1, Item<K, V> e2) {
+            int result = e1.value.compareTo(e2.value);
+            if (result != 0) {
+                return result;
+            }
+            return e2.key.compareTo(e1.key);
+        }
+    }
+
 }

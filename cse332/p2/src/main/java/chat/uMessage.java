@@ -1,8 +1,11 @@
 package chat;
 
+import cse332.datastructures.trees.BinarySearchTree;
 import cse332.interfaces.misc.Dictionary;
 import cse332.types.AlphabeticString;
 import cse332.types.NGram;
+import datastructures.dictionaries.*;
+import datastructures.worklists.MinFourHeap;
 import javafx.embed.swing.JFXPanel;
 import p2.clients.NGramTester;
 import p2.wordsuggestor.WordSuggestor;
@@ -17,12 +20,12 @@ import java.io.IOException;
 import java.util.function.Supplier;
 
 public class uMessage {
-    private static final int N = 3;
-    private static final String CORPUS = "corpus/eggs.txt";
+    private static final int N = 4;
+    private static final String CORPUS = "corpus/alice.txt";
     private static final Supplier<Dictionary<NGram, Dictionary<AlphabeticString, Integer>>> NEW_OUTER = NGramTester
-            .trieConstructor(NGram.class);
+            .hashtableConstructor(MoveToFrontList::new);
     private static final Supplier<Dictionary<AlphabeticString, Integer>> NEW_INNER = NGramTester
-            .trieConstructor(AlphabeticString.class);
+            .hashtableConstructor(MoveToFrontList::new);
 
     /*
      *
