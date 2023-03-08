@@ -30,8 +30,15 @@ public class Parser {
      * @param adjMatrix Adjacency matrix
      * @return Adjacency list with incoming edges
      */
-    public static Object parseInverse(int[][] adjMatrix) {
-        throw new NotYetImplementedException();
+    public static List<HashMap<Integer, Integer>> parseInverse(int[][] adjMatrix) {
+        List<HashMap<Integer, Integer>> adjList = new ArrayList<>(adjMatrix.length);
+        for (int i = 0; i < adjMatrix[0].length; i++) {
+            adjList.add(i, new HashMap<>());
+            for (int j = 0; j < adjMatrix.length; j++) {
+                adjList.get(i).put(j, adjMatrix[i][j]);
+            }
+        }
+        return adjList;
     }
 
 }

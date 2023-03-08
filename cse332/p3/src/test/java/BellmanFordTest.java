@@ -1,5 +1,6 @@
 import cse332.interfaces.BellmanFordSolver;
 import cse332.graph.GraphUtil;
+import org.junit.jupiter.api.RepeatedTest;
 import solvers.*;
 
 import org.junit.jupiter.api.Assertions;
@@ -10,11 +11,11 @@ import java.util.List;
 public class BellmanFordTest {
 
     /** change this line to test other solvers */
-    BellmanFordSolver s = new OutSequential();
+    BellmanFordSolver s = new InParallel();
 
     static final int X = GraphUtil.INF;
 
-    @Test
+    @RepeatedTest(10000)
     public void test_small_graph() {
         int[][] g = {
                 {X, 0, 0},
@@ -24,7 +25,7 @@ public class BellmanFordTest {
         Assertions.assertTrue(cycle_equals(result, List.of(1, 2)));
     }
 
-    @Test
+    @RepeatedTest(10000)
     public void test_small_disconnected_graph() {
         int[][] g = {
                 {X, X, X},
@@ -34,7 +35,7 @@ public class BellmanFordTest {
         Assertions.assertTrue(cycle_equals(result, List.of()));
     }
 
-    @Test
+    @RepeatedTest(10000)
     public void test_small_graph_other_source() {
         int[][] g = {
                 {X, X, 1},
@@ -44,7 +45,7 @@ public class BellmanFordTest {
         Assertions.assertTrue(cycle_equals(result, List.of(0, 2)));
     }
 
-    @Test
+    @RepeatedTest(10000)
     public void test_small_disconnected_graph_other_source() {
         int[][] g = {
                 {X, X, 1},
@@ -54,7 +55,7 @@ public class BellmanFordTest {
         Assertions.assertTrue(cycle_equals(result, List.of()));
     }
 
-    @Test
+    @RepeatedTest(10000)
     public void test_medium_graph() {
         int[][] g = {
                 {X, 0, 0, 0, 0},
@@ -66,7 +67,7 @@ public class BellmanFordTest {
         Assertions.assertTrue(cycle_equals(result, List.of(2, 4, 3)));
     }
 
-    @Test
+    @RepeatedTest(10000)
     public void test_simple_cycle_1() {
         int[][] g = {
                 {X, 1, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X},
@@ -94,7 +95,7 @@ public class BellmanFordTest {
                 List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)));
     }
 
-    @Test
+    @RepeatedTest(10000)
     public void test_simple_cycle_2() {
         int[][] g = {
                 {X, -1, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X},
@@ -122,7 +123,7 @@ public class BellmanFordTest {
                 List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)));
     }
 
-    @Test
+    @RepeatedTest(10000)
     public void test_random_graph_5_4cycle() {
         int[][] g = GraphUtil.generate(5, 0.8, 0.5, 2, 4, -4, -2, 332);
         List<Integer> result = s.solve(g, 0);
@@ -133,7 +134,7 @@ public class BellmanFordTest {
                         cycle_equals(result, List.of(2, 3)));
     }
 
-    @Test
+    @RepeatedTest(10000)
     public void test_random_graph_10_2cycle() {
         int[][] g = GraphUtil.generate(10, 0.3, 0.3, 4, 12, -4, 0, 332332);
         List<Integer> result = s.solve(g, 0);
@@ -142,7 +143,7 @@ public class BellmanFordTest {
                         cycle_equals(result, List.of(2, 9, 8, 7)));
     }
 
-    @Test
+    @RepeatedTest(10000)
     public void test_random_graph_20() {
         int[][] g = GraphUtil.generate(20, 0.15, 0.1, 8, 16, -8, 0, 332);
         List<Integer> result = s.solve(g, 0);
