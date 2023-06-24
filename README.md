@@ -1,2 +1,2 @@
-# prog_java
+# java
 Java Projects
